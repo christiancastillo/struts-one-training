@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE struts-config PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+        "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+
+<!-- Línea 06: Dentro del tag form-beans se definen los formularios 
+que usa la aplicación. 
+Un formulario es un conjunto de datos que automáticamente 
+Struts nos inicializa con los datos que el usuario ha introduccido en el 
+formulario HTML generado desde la JSP. -->
+
+<!-- Formularios:
+
+org.apache.struts.action.ActionForm: 
+Formulario que tiene un atributo, un getter y un setter por cada input del formulario asociada
+ a la acción que lo usa. -->
+
+    <form-beans> <!-- Se definen los formularios que se usarán en la aplicación -->
+        <form-bean name="operandosForm"  type="com.form.SumarForm"/>
+        <form-bean name="registroForm" type="org.apache.struts.validator.DynaValidatorForm">
+              <form-property name="login"    type="java.lang.String"></form-property>
+              <form-property name="email"    type="java.lang.String"></form-property>
+              <form-property name="age"      type="java.lang.Byte"></form-property>
+        </form-bean>
+    </form-beans>
+    
+    <!-- Definimos «operandosForm» un 
+    SumarForm (hereda de ActionForm) 
+    que será usado por la acción «sumar» 
+    (línea 18) de manera que antes de ejecutar 
+    la acción SumarAction se ejecutará el método validate del formulario
+     SumarForm y sólo si este método no detecta ningún error, será ejecutada la acción. -->
+    
+    <!-- Definimos «registroForm» un DynaValidatorForm 
+    que será usado por la acción «registro» (línea 27) 
+    de manera que antes de ejecutar la acción RegistroAction 
+    se ejecutarán las validaciones especificadas en el archivo 
+    /WEB-INF/validation.xml y sólo si no se detecta ningún error, será ejecutada la acción. -->
+    
+    
+    
+	<action-mappings>
+        <action path="/sumar" 
+        		type="com.action.SumarAction" 
+        		name="operandosForm"
+        		scope="request"
+        		validate="true"
+        		cancellable="true"
+        		input="/index.jsp">
+   			<forward name="ok" 		 path="/index.jsp"/>
+   			<forward name="cancel" path="/WEB-INF/jsp/cancel.jsp"/>
+        </action>
+ 
+		<action path="/registro" 
+	   		type="com.action.RegistroAction" 
+	   		name="registroForm"
+	   		scope="session"
+	   		validate="true"
+	   		input="/index.jsp">
+			<forward name="ok" 	path="/WEB-INF/jsp/registerOk.jsp"/>
+		</action>        
+    </action-mappings>
+ 
+    <message-resources parameter="ApplicationResources" null="false"/>
+    
+	<plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+		<set-property
+				property="pathnames" 
+				value="/org/apache/struts/validator/validator-rules.xml, /WEB-INF/validation.xml" />
+	</plug-in>    
+</struts-config>
